@@ -1,0 +1,11 @@
+{% if has_cli %}
+import typer
+
+app = typer.Typer(help="{{ description }}")
+
+
+@app.command()
+def main() -> None:
+    """Entry point."""
+    typer.echo("Hello from {{ package_name }}!")
+{% endif %}

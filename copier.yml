@@ -1,0 +1,55 @@
+_subdirectory: template
+
+project_type:
+  type: str
+  help: "What kind of project is this?"
+  choices:
+    Standalone analysis — scripts and notebooks only (no package): scripts
+    Standalone analysis — with internal package and tests: analysis
+    Published shared library — pip-installable (e.g. gla-data, hsds-box): package
+  default: analysis
+
+package_name:
+  type: str
+  help: "Project name (hyphens ok, e.g. housing-projections)"
+
+import_name:
+  type: str
+  help: "Importable Python name (underscores, e.g. housing_projections)"
+  default: "{{ package_name | replace('-', '_') }}"
+  when: "{{ project_type != 'scripts' }}"
+
+description:
+  type: str
+  help: "One-line description of the project"
+
+author_name:
+  type: str
+  help: "Author full name"
+
+author_email:
+  type: str
+  help: "Author email address"
+
+has_cli:
+  type: bool
+  help: "Does this project need a CLI entry point?"
+  default: false
+  when: "{{ project_type != 'scripts' }}"
+
+python_version:
+  type: str
+  help: "Minimum Python version"
+  default: "3.12"
+  choices:
+    - "3.11"
+    - "3.12"
+    - "3.13"
+
+platforms:
+  type: str
+  help: "Target pixi platforms (as TOML array string)"
+  default: '["osx-arm64", "linux-64", "win-64"]'
+
+_tasks:
+  - "{% if project_type == 'scripts' %}rm -rf src tests{% endif %}"

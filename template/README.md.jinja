@@ -1,0 +1,38 @@
+# {{ package_name }}
+
+{{ description }}
+{% if project_type == 'package' %}
+## Installation
+
+```bash
+pip install {{ package_name }}
+```
+
+For development:
+
+```bash
+git clone <repo-url>
+cd {{ package_name }}
+pixi install
+```
+{% else %}
+## Getting started
+
+```bash
+git clone <repo-url>
+cd {{ package_name }}
+pixi install
+```
+{% endif %}
+{% if project_type != 'scripts' %}
+## Development
+
+```bash
+pixi run test    # run tests
+pixi run lint    # check code style
+pixi run format  # auto-format
+{% if project_type == 'package' %}
+pixi run typecheck  # type checking
+{% endif %}
+```
+{% endif %}

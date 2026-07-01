@@ -1,0 +1,84 @@
+{% if project_type != 'scripts' -%}
+[project]
+name = "{{ package_name }}"
+version = "0.1.0"
+description = "{{ description }}"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">={{ python_version }}"
+authors = [{ name = "{{ author_name }}", email = "{{ author_email }}" }]
+dependencies = []
+{% if has_cli %}
+[project.scripts]
+{{ package_name }} = "{{ import_name }}.cli:main"
+
+{% endif %}
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+{% endif -%}
+[tool.pixi.workspace]
+channels  = ["conda-forge"]
+platforms = {{ platforms }}
+
+[tool.pixi.dependencies]
+python = ">={{ python_version }}"
+{% if project_type != 'scripts' %}
+[tool.pixi.pypi-dependencies]
+{{ import_name }} = { path = ".", editable = true }
+pytest = "*"
+ruff   = "*"
+{% if project_type == 'package' %}
+pytest-cov      = "*"
+mypy            = "*"
+uv              = "*"
+build           = "*"
+bump-my-version = "*"
+{% endif %}
+{% if has_cli %}
+typer = "*"
+{% endif %}
+
+[tool.pixi.tasks]
+test   = "pytest{% if project_type == 'package' %} --cov=src --cov-report=term-missing{% endif %}"
+lint   = "ruff check src tests"
+format = "ruff format src tests"
+{% if project_type == 'package' %}
+typecheck     = "mypy"
+build         = "python -m build"
+publish-test  = "uv publish --publish-url https://test.pypi.org/legacy/ dist/*"
+publish       = "uv publish dist/*"
+add-dep       = "uv add"
+release-patch = "bump-my-version bump patch"
+release-minor = "bump-my-version bump minor"
+release-major = "bump-my-version bump major"
+{% endif %}
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts   = "-v --tb=short"
+{% if project_type == 'package' %}
+[tool.coverage.run]
+source = ["src"]
+
+{% endif %}
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+{% if project_type == 'package' %}
+[tool.mypy]
+strict                 = true
+packages               = ["{{ import_name }}"]
+ignore_missing_imports = true
+
+[tool.bumpversion]
+current_version = "0.1.0"
+commit = true
+tag    = true
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search   = 'version = "{current_version}"'
+replace  = 'version = "{new_version}"'
+{% endif %}
+{% endif %}
