@@ -51,5 +51,6 @@ platforms:
   help: "Target pixi platforms (as TOML array string)"
   default: '["osx-arm64", "linux-64", "win-64"]'
 
-_tasks:
-  - "{% if project_type == 'scripts' %}rm -rf src tests{% endif %}"
+_exclude:
+  - "{% if project_type == 'scripts' %}src{% endif %}"
+  - "{% if project_type == 'scripts' %}tests{% endif %}"
