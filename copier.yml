@@ -2,11 +2,24 @@ _subdirectory: template
 
 project_type:
   type: str
-  help: "What kind of project is this?"
+  help: |
+    What kind of project is this?
+
+    scripts  — A standalone analysis (report, model, one-off dataset). Scripts and
+               notebooks only. No package, no tests directory.
+
+    analysis — A standalone analysis that also contains an internal Python package
+               (src/ layout) and tests. Use this when you want to organise reusable
+               code within a single project, but do not intend to publish it.
+
+    package  — A shared library intended to be pip-installed by other projects
+               (e.g. gla-data, hsds-box). Includes publishing, versioning, and
+               type-checking tooling. Use this when starting a new shared package
+               or contributing a standalone subpackage alongside gla-hsds work.
   choices:
-    Standalone analysis — scripts and notebooks only (no package): scripts
-    Standalone analysis — with internal package and tests: analysis
-    Published shared library — pip-installable (e.g. gla-data, hsds-box): package
+    "Standalone analysis — scripts and notebooks only": scripts
+    "Standalone analysis — with internal package and tests": analysis
+    "Shared library — pip-installable (e.g. gla-data, hsds-box)": package
   default: analysis
 
 package_name:
