@@ -2,11 +2,15 @@
 
 Copier template for data science projects in the City Intelligence Data Science Team.
 
-## Project vs package
+## Project types
 
-A **project** is the full working environment: raw data, notebooks, outputs, configuration, and the Git repository. A **package** is the installable Python library that lives inside the project under `src/`. It contains the reusable logic — data loading, models, plots — that can be imported, tested, and versioned independently.
+This template covers three kinds of work:
 
-This template scaffolds both: the project structure around it (notebooks, data, outputs) and the package inside it (the `src/` directory). The project is the container; the package is the artefact that gets distributed and depended on by other projects.
+**`scripts`** — A standalone analysis (report, model, one-off dataset) with scripts and notebooks only. No `src/` package, no tests directory.
+
+**`analysis`** — A standalone analysis that also contains an internal Python package (`src/` layout) and tests. Use this when you want to organise reusable code within a project but do not intend to publish it.
+
+**`package`** — A shared library intended to be pip-installed by other projects (e.g. `gla-data`, `hsds-box`). Includes publishing, versioning, and type-checking tooling. Use this when starting a new shared package or contributing a standalone subpackage alongside `gla-hsds` work.
 
 ## Prerequisites
 
@@ -79,12 +83,13 @@ The template generates a minimal starting point. Add `conf/`, `data/interim/`, `
 
 | Variable | Description | Default |
 |---|---|---|
+| `project_type` | `scripts`, `analysis`, or `package` — see above | `analysis` |
 | `package_name` | Project / package name (hyphens ok, e.g. `housing-projections`) | — |
 | `import_name` | Importable Python name (underscores, auto-derived) | — |
 | `description` | One-line description of the project | — |
 | `author_name` | Author full name | — |
 | `author_email` | Author email address | — |
-| `has_cli` | Generate a CLI entry point | `false` |
+| `has_cli` | Generate a CLI entry point (`analysis` and `package` only) | `false` |
 | `python_version` | Minimum Python version | `3.12` |
 | `platforms` | Target pixi platforms | osx-arm64, linux-64, win-64 |
 
