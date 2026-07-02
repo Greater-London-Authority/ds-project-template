@@ -56,6 +56,25 @@ copier update
 
 ## What gets generated
 
+The structure varies by project type. Directories marked *(excluded)* are not generated for that type.
+
+### `analysis`
+
+```
+project-name/
+├── notebooks/
+├── data/
+│   └── raw/                # gitignored — immutable source data
+├── outputs/                # gitignored — reproducible from code
+├── pyproject.toml          # environment config only, no package
+├── .copier-answers.yml     # records template answers for future updates
+├── .env.example
+├── .gitignore
+└── README.md
+```
+
+### `project`
+
 ```
 project-name/
 ├── src/
@@ -66,18 +85,41 @@ project-name/
 │       └── cli.py          # optional, only if has_cli=true
 ├── tests/
 │   ├── __init__.py
-│   └── conftest.py
-├── notebooks/              # exploratory work — not imported by the package
+│   ├── conftest.py         # shared fixtures
+│   └── test_placeholder.py # replace with real tests
+├── notebooks/
 ├── data/
 │   └── raw/                # gitignored — immutable source data
 ├── outputs/                # gitignored — reproducible from code
 ├── pyproject.toml
-├── .env.example            # documents required env vars — committed
+├── pixi.lock
+├── .copier-answers.yml
+├── .env.example
 ├── .gitignore
 └── README.md
 ```
 
-The template generates a minimal starting point. Add `conf/`, `data/interim/`, `data/processed/`, `outputs/figures/` and other folders when the project grows to need them — see the [Starting a Standalone Analysis Project](https://london.atlassian.net/wiki/display/CDDS/Starting+a+Standalone+Analysis+Project) guide for guidance on when to add what.
+### `package`
+
+```
+project-name/
+├── src/
+│   └── package_name/
+│       ├── __init__.py     # exports __version__ and __all__
+│       ├── py.typed        # signals type hints are shipped
+│       ├── config.py       # reads env vars via pydantic-settings
+│       └── cli.py          # optional, only if has_cli=true
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py         # shared fixtures
+│   └── test_placeholder.py # replace with real tests
+├── pyproject.toml          # includes build, versioning, and publish tasks
+├── pixi.lock
+├── .copier-answers.yml
+├── .env.example
+├── .gitignore
+└── README.md
+```
 
 ## Template variables
 
@@ -89,7 +131,7 @@ The template generates a minimal starting point. Add `conf/`, `data/interim/`, `
 | `description` | One-line description of the project | — |
 | `author_name` | Author full name | — |
 | `author_email` | Author email address | — |
-| `has_cli` | Generate a CLI entry point (`analysis` and `package` only) | `false` |
+| `has_cli` | Generate a CLI entry point (`project` and `package` only) | `false` |
 | `python_version` | Minimum Python version | `3.12` |
 | `platforms` | Target pixi platforms | osx-arm64, linux-64, win-64 |
 
@@ -102,5 +144,5 @@ git add .
 git commit -m "Initial scaffold from ds-project-template"
 
 pixi install      # creates the environment
-pixi run test     # confirms the scaffold works
+pixi run test     # confirms the scaffold works (project and package types)
 ```
