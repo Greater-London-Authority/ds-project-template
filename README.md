@@ -26,8 +26,6 @@ brew install pixi
 # Windows (PowerShell)
 powershell -ExecutionPolicy ByPass -c "irm -useb https://pixi.sh/install.ps1 | iex"
 
-# Windows (winget)
-winget install prefix-dev.pixi
 ```
 
 Restart your terminal after installing, then verify with `pixi --version`.
