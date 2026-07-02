@@ -77,7 +77,7 @@ project-name/
 └── README.md
 ```
 
-The template generates a minimal starting point. Add `conf/`, `data/interim/`, `data/processed/`, `outputs/figures/` and other folders when the project grows to need them — see the [Data Science Project Structure guide](../housing-projections/docs/data-science-project-structure.md) for guidance on when to add what.
+The template generates a minimal starting point. Add `conf/`, `data/interim/`, `data/processed/`, `outputs/figures/` and other folders when the project grows to need them — see the [Starting a Standalone Analysis Project](https://london.atlassian.net/wiki/display/CDDS/Starting+a+Standalone+Analysis+Project) guide for guidance on when to add what.
 
 ## Template variables
 
