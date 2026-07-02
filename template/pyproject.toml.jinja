@@ -17,45 +17,6 @@ dependencies = []
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-{% endif -%}
-[tool.pixi.workspace]
-channels  = ["conda-forge"]
-platforms = {{ platforms }}
-
-[tool.pixi.dependencies]
-python = ">={{ python_version }}"
-{% if project_type != 'analysis' %}
-[tool.pixi.pypi-dependencies]
-{{ import_name }} = { path = ".", editable = true }
-pytest            = "*"
-ruff              = "*"
-pydantic-settings = "*"
-{% if project_type == 'package' %}
-pytest-cov      = "*"
-mypy            = "*"
-uv              = "*"
-build           = "*"
-bump-my-version = "*"
-{% endif %}
-{% if has_cli %}
-typer = "*"
-{% endif %}
-
-[tool.pixi.tasks]
-test   = "pytest{% if project_type == 'package' %} --cov=src --cov-report=term-missing{% endif %}"
-lint   = "ruff check src tests"
-format = "ruff format src tests"
-{% if project_type == 'package' %}
-typecheck     = "mypy"
-build         = "python -m build"
-publish-test  = "uv publish --publish-url https://test.pypi.org/legacy/ dist/*"
-publish       = "uv publish dist/*"
-add-dep       = "uv add"
-release-patch = "bump-my-version bump patch"
-release-minor = "bump-my-version bump minor"
-release-major = "bump-my-version bump major"
-{% endif %}
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts   = "-v --tb=short"
@@ -64,6 +25,7 @@ addopts   = "-v --tb=short"
 source = ["src"]
 
 {% endif %}
+{% endif -%}
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 {% if project_type == 'package' %}
@@ -81,5 +43,4 @@ tag    = true
 filename = "pyproject.toml"
 search   = 'version = "{current_version}"'
 replace  = 'version = "{new_version}"'
-{% endif %}
 {% endif %}

@@ -66,8 +66,9 @@ project-name/
 ├── data/
 │   └── raw/                # gitignored — immutable source data
 ├── outputs/                # gitignored — reproducible from code
-├── pyproject.toml          # environment config only, no package
-├── .copier-answers.yml     # records template answers for future updates
+├── pixi.toml               # environment and dependencies
+├── pyproject.toml          # tool configuration (ruff etc.)
+├── .copier-answers.yml
 ├── .env.example
 ├── .gitignore
 └── README.md
@@ -91,7 +92,8 @@ project-name/
 ├── data/
 │   └── raw/                # gitignored — immutable source data
 ├── outputs/                # gitignored — reproducible from code
-├── pyproject.toml
+├── pixi.toml               # environment, dependencies, and tasks
+├── pyproject.toml          # package metadata, build system, tool config
 ├── .copier-answers.yml
 ├── .env.example
 ├── .gitignore
@@ -112,7 +114,8 @@ project-name/
 │   ├── __init__.py
 │   ├── conftest.py         # shared fixtures
 │   └── test_placeholder.py # replace with real tests
-├── pyproject.toml          # includes build, versioning, and publish tasks
+├── pixi.toml               # environment, dependencies, and tasks
+├── pyproject.toml          # package metadata, build system, tool config
 ├── .copier-answers.yml
 ├── .env.example
 ├── .gitignore
