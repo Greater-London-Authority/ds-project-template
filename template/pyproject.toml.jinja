@@ -1,4 +1,4 @@
-{% if project_type != 'scripts' -%}
+{% if project_type != 'analysis' -%}
 [project]
 name = "{{ package_name }}"
 version = "0.1.0"
@@ -24,7 +24,7 @@ platforms = {{ platforms }}
 
 [tool.pixi.dependencies]
 python = ">={{ python_version }}"
-{% if project_type != 'scripts' %}
+{% if project_type != 'analysis' %}
 [tool.pixi.pypi-dependencies]
 {{ import_name }} = { path = ".", editable = true }
 pytest = "*"

@@ -5,22 +5,21 @@ project_type:
   help: |
     What kind of project is this?
 
-    scripts  — A standalone analysis (report, model, one-off dataset). Scripts and
-               notebooks only. No package, no tests directory.
+    analysis — A standalone analysis (report, model, one-off dataset). Scripts and
+               notebooks only. No src/ package, no tests directory.
 
-    analysis — A standalone analysis that also contains an internal Python package
-               (src/ layout) and tests. Use this when you want to organise reusable
-               code within a single project, but do not intend to publish it.
+    project  — A standalone project with an internal Python package (src/ layout)
+               and tests. Use this when you want to organise reusable code within a
+               single project, but do not intend to share it with other teams.
 
-    package  — A shared library intended to be pip-installed by other projects
-               (e.g. gla-data, hsds-box). Includes publishing, versioning, and
-               type-checking tooling. Use this when starting a new shared package
-               or contributing a standalone subpackage alongside gla-hsds work.
+    package  — A shared library for use by other projects, teams, or people —
+               whether published to PyPI or used internally (e.g. gla-data,
+               hsds-box). Includes publishing, versioning, and type-checking tooling.
   choices:
-    "Standalone analysis — scripts and notebooks only": scripts
-    "Standalone analysis — with internal package and tests": analysis
-    "Shared library — pip-installable (e.g. gla-data, hsds-box)": package
-  default: analysis
+    "Standalone analysis — scripts and notebooks only": analysis
+    "Standalone project — with internal package and tests": project
+    "Shared library — for use by other projects or teams": package
+  default: project
 
 package_name:
   type: str
@@ -30,7 +29,7 @@ import_name:
   type: str
   help: "Importable Python name (underscores, e.g. housing_projections)"
   default: "{{ package_name | replace('-', '_') }}"
-  when: "{{ project_type != 'scripts' }}"
+  when: "{{ project_type != 'analysis' }}"
 
 description:
   type: str
@@ -48,7 +47,7 @@ has_cli:
   type: bool
   help: "Does this project need a CLI entry point?"
   default: false
-  when: "{{ project_type != 'scripts' }}"
+  when: "{{ project_type != 'analysis' }}"
 
 python_version:
   type: str
@@ -65,5 +64,8 @@ platforms:
   default: '["osx-arm64", "linux-64", "win-64"]'
 
 _exclude:
-  - "{% if project_type == 'scripts' %}src{% endif %}"
-  - "{% if project_type == 'scripts' %}tests{% endif %}"
+  - "{% if project_type == 'analysis' %}src{% endif %}"
+  - "{% if project_type == 'analysis' %}tests{% endif %}"
+  - "{% if project_type == 'package' %}data{% endif %}"
+  - "{% if project_type == 'package' %}notebooks{% endif %}"
+  - "{% if project_type == 'package' %}outputs{% endif %}"

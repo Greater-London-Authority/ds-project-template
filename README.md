@@ -4,13 +4,11 @@ Copier template for data science projects in the City Intelligence Data Science 
 
 ## Project types
 
-This template covers three kinds of work:
+**`analysis`** — A standalone analysis (report, model, one-off dataset). Scripts and notebooks only. No `src/` package, no tests directory.
 
-**`scripts`** — A standalone analysis (report, model, one-off dataset) with scripts and notebooks only. No `src/` package, no tests directory.
+**`project`** — A standalone project with an internal Python package (`src/` layout) and tests. Use this when you want to organise reusable code within a project but do not intend to share it with other teams.
 
-**`analysis`** — A standalone analysis that also contains an internal Python package (`src/` layout) and tests. Use this when you want to organise reusable code within a project but do not intend to publish it.
-
-**`package`** — A shared library intended to be pip-installed by other projects (e.g. `gla-data`, `hsds-box`). Includes publishing, versioning, and type-checking tooling. Use this when starting a new shared package or contributing a standalone subpackage alongside `gla-hsds` work.
+**`package`** — A shared library for use by other projects, teams, or people — whether published to PyPI or used internally (e.g. `gla-data`, `hsds-box`). Includes publishing, versioning, and type-checking tooling.
 
 ## Prerequisites
 
@@ -83,7 +81,7 @@ The template generates a minimal starting point. Add `conf/`, `data/interim/`, `
 
 | Variable | Description | Default |
 |---|---|---|
-| `project_type` | `scripts`, `analysis`, or `package` — see above | `analysis` |
+| `project_type` | `analysis`, `project`, or `package` — see above | `project` |
 | `package_name` | Project / package name (hyphens ok, e.g. `housing-projections`) | — |
 | `import_name` | Importable Python name (underscores, auto-derived) | — |
 | `description` | One-line description of the project | — |
