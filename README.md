@@ -56,7 +56,7 @@ copier update
 
 ## What gets generated
 
-The structure varies by project type. `pixi.lock` is created by `pixi install` after scaffolding, not by copier itself.
+The structure varies by project type.
 
 ### `analysis`
 
