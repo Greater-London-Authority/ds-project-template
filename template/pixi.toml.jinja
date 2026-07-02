@@ -1,6 +1,6 @@
 [workspace]
 channels  = ["conda-forge"]
-platforms = {{ platforms }}
+platforms = {{ platforms | tojson }}
 
 [dependencies]
 python = ">={{ python_version }}"

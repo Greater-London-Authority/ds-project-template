@@ -60,8 +60,17 @@ python_version:
 
 platforms:
   type: str
-  help: "Target pixi platforms (as TOML array string)"
-  default: '["osx-arm64", "linux-64", "win-64"]'
+  multiselect: true
+  help: "Target platforms"
+  choices:
+    - osx-arm64
+    - osx-64
+    - linux-64
+    - win-64
+  default:
+    - osx-arm64
+    - linux-64
+    - win-64
 
 _exclude:
   - "{% if project_type == 'analysis' %}src{% else %}.exclude-placeholder{% endif %}"
