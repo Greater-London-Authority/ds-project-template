@@ -64,8 +64,8 @@ platforms:
   default: '["osx-arm64", "linux-64", "win-64"]'
 
 _exclude:
-  - "{% if project_type == 'analysis' %}src{% endif %}"
-  - "{% if project_type == 'analysis' %}tests{% endif %}"
-  - "{% if project_type == 'package' %}data{% endif %}"
-  - "{% if project_type == 'package' %}notebooks{% endif %}"
-  - "{% if project_type == 'package' %}outputs{% endif %}"
+  - "{% if project_type == 'analysis' %}src{% else %}.exclude-placeholder{% endif %}"
+  - "{% if project_type == 'analysis' %}tests{% else %}.exclude-placeholder{% endif %}"
+  - "{% if project_type == 'package' %}data{% else %}.exclude-placeholder{% endif %}"
+  - "{% if project_type == 'package' %}notebooks{% else %}.exclude-placeholder{% endif %}"
+  - "{% if project_type == 'package' %}outputs{% else %}.exclude-placeholder{% endif %}"
