@@ -17,14 +17,17 @@ Copier template for data science projects in the City Intelligence Data Science 
 If you don't have pixi installed:
 
 ```bash
-# macOS / Linux
-curl -fsSL https://pixi.sh/install.sh | bash
+# macOS/Linux
+curl -fsSL https://pixi.sh/install.sh | sh
 
-# macOS via Homebrew
+# macOS (Homebrew)
 brew install pixi
 
 # Windows (PowerShell)
-iwr -useb https://pixi.sh/install.ps1 | iex
+powershell -ExecutionPolicy ByPass -c "irm -useb https://pixi.sh/install.ps1 | iex"
+
+# Windows (winget)
+winget install prefix-dev.pixi
 ```
 
 Restart your terminal after installing, then verify with `pixi --version`.
