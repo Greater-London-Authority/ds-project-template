@@ -25,8 +25,9 @@ brew install pixi
 
 # Windows (PowerShell)
 powershell -ExecutionPolicy ByPass -c "irm -useb https://pixi.sh/install.ps1 | iex"
-
 ```
+
+Check the [latest installation instructions](https://pixi.sh/latest/getting_started/installation/) if these are out of date.
 
 Restart your terminal after installing, then verify with `pixi --version`.
 
