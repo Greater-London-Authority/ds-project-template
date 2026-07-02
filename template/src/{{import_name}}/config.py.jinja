@@ -6,8 +6,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     """Runtime configuration.
 
-    Non-sensitive defaults live in conf/base/parameters.yml.
-    Sensitive values and local overrides go in .env (gitignored).
+    Values are loaded from .env (gitignored).
     All settings can be overridden with environment variables prefixed
     {{ import_name | upper }}_.
     """

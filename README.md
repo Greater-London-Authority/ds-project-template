@@ -81,7 +81,8 @@ project-name/
 │   └── package_name/
 │       ├── __init__.py     # exports __version__ and __all__
 │       ├── py.typed        # signals type hints are shipped
-│       └── config.py       # example settings class using env vars
+│       ├── config.py       # example settings class using env vars
+│       └── cli.py          # only present if has_cli=true
 ├── tests/
 │   ├── __init__.py
 │   ├── conftest.py         # shared fixtures
@@ -105,7 +106,8 @@ project-name/
 │   └── package_name/
 │       ├── __init__.py     # exports __version__ and __all__
 │       ├── py.typed        # signals type hints are shipped
-│       └── config.py       # example settings class using env vars
+│       ├── config.py       # example settings class using env vars
+│       └── cli.py          # only present if has_cli=true
 ├── tests/
 │   ├── __init__.py
 │   ├── conftest.py         # shared fixtures

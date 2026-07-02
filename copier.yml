@@ -69,3 +69,4 @@ _exclude:
   - "{% if project_type == 'package' %}data{% else %}.exclude-placeholder{% endif %}"
   - "{% if project_type == 'package' %}notebooks{% else %}.exclude-placeholder{% endif %}"
   - "{% if project_type == 'package' %}outputs{% else %}.exclude-placeholder{% endif %}"
+  - "{% if not has_cli %}src/*/cli.py{% else %}.exclude-placeholder{% endif %}"
