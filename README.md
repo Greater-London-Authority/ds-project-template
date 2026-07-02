@@ -1,4 +1,4 @@
-# ds-package-template
+# ds-project-template
 
 Copier template for data science projects in the City Intelligence Data Science Team.
 
@@ -42,7 +42,7 @@ The DST team at the GLA recommends using pixi for all data science projects. `pi
 ### Create a new project
 
 ```bash
-copier copy gh:your-org/ds-package-template path/to/new-project
+copier copy gh:Greater-London-Authority/ds-project-template path/to/new-project
 ```
 
 ### Update an existing project from the template
@@ -97,7 +97,7 @@ The template generates a minimal starting point. Add `conf/`, `data/interim/`, `
 cd project-name
 git init
 git add .
-git commit -m "Initial scaffold from ds-package-template"
+git commit -m "Initial scaffold from ds-project-template"
 
 pixi install      # creates the environment
 pixi run test     # confirms the scaffold works
