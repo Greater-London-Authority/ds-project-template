@@ -45,6 +45,12 @@ The DST team at the GLA recommends using pixi for all data science projects. `pi
 
 ```bash
 copier copy gh:Greater-London-Authority/ds-project-template path/to/new-project
+cd path/to/new-project
+git init
+git add .
+git commit -m "Initial scaffold from ds-project-template"
+pixi install
+pixi run test     # project and package types only
 ```
 
 ### Update an existing project from the template
@@ -136,14 +142,3 @@ project-name/
 | `python_version` | Minimum Python version | `3.12` |
 | `platforms` | Target pixi platforms | osx-arm64, linux-64, win-64 |
 
-## After scaffolding
-
-```bash
-cd project-name
-git init
-git add .
-git commit -m "Initial scaffold from ds-project-template"
-
-pixi install      # creates the environment
-pixi run test     # confirms the scaffold works (project and package types)
-```
