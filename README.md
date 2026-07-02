@@ -45,6 +45,11 @@ The DST team at the GLA recommends using pixi for all data science projects. `pi
 
 ```bash
 copier copy gh:Greater-London-Authority/ds-project-template path/to/new-project
+```
+
+Then set up the repo and install the environment:
+
+```bash
 cd path/to/new-project
 git init
 git add .
