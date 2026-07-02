@@ -27,8 +27,9 @@ python = ">={{ python_version }}"
 {% if project_type != 'analysis' %}
 [tool.pixi.pypi-dependencies]
 {{ import_name }} = { path = ".", editable = true }
-pytest = "*"
-ruff   = "*"
+pytest            = "*"
+ruff              = "*"
+pydantic-settings = "*"
 {% if project_type == 'package' %}
 pytest-cov      = "*"
 mypy            = "*"

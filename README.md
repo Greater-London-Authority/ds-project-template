@@ -56,7 +56,7 @@ copier update
 
 ## What gets generated
 
-The structure varies by project type. Directories marked *(excluded)* are not generated for that type.
+The structure varies by project type. `pixi.lock` is created by `pixi install` after scaffolding, not by copier itself.
 
 ### `analysis`
 
@@ -81,8 +81,7 @@ project-name/
 │   └── package_name/
 │       ├── __init__.py     # exports __version__ and __all__
 │       ├── py.typed        # signals type hints are shipped
-│       ├── config.py       # reads env vars via pydantic-settings
-│       └── cli.py          # optional, only if has_cli=true
+│       └── config.py       # example settings class using env vars
 ├── tests/
 │   ├── __init__.py
 │   ├── conftest.py         # shared fixtures
@@ -92,7 +91,6 @@ project-name/
 │   └── raw/                # gitignored — immutable source data
 ├── outputs/                # gitignored — reproducible from code
 ├── pyproject.toml
-├── pixi.lock
 ├── .copier-answers.yml
 ├── .env.example
 ├── .gitignore
@@ -107,14 +105,12 @@ project-name/
 │   └── package_name/
 │       ├── __init__.py     # exports __version__ and __all__
 │       ├── py.typed        # signals type hints are shipped
-│       ├── config.py       # reads env vars via pydantic-settings
-│       └── cli.py          # optional, only if has_cli=true
+│       └── config.py       # example settings class using env vars
 ├── tests/
 │   ├── __init__.py
 │   ├── conftest.py         # shared fixtures
 │   └── test_placeholder.py # replace with real tests
 ├── pyproject.toml          # includes build, versioning, and publish tasks
-├── pixi.lock
 ├── .copier-answers.yml
 ├── .env.example
 ├── .gitignore
