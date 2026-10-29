@@ -26,8 +26,8 @@ htmlcov/
 .env
 
 # Data and outputs are never committed (including anything derived from licensed data)
-data/
-outputs/
+/data/
+/outputs/
 
 # OS
 .DS_Store

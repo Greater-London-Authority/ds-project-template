@@ -17,14 +17,25 @@ def test_relative_paths_resolve_against_the_project_root(root: Path) -> None:
     assert config.get_settings().output_dir == root / "outputs"
 
 
+def test_home_paths_are_expanded(root: Path) -> None:
+    (root / ".env").write_text(f"{config.PREFIX}DATA_DIR=~/shared\n")
+    assert config.get_settings().data_dir == Path.home() / "shared"
+
+
 def test_env_file_is_read_from_the_project_root(root: Path) -> None:
     (root / ".env").write_text(f"{config.PREFIX}OUTPUT_DIR=elsewhere\n")
     assert config.get_settings().output_dir == root / "elsewhere"
 
 
-def test_unknown_key_in_env_file_is_an_error(root: Path) -> None:
-    (root / ".env").write_text(f"{config.PREFIX}OUTPUT_DRI=typo\n")
-    with pytest.raises(ValueError):
+def test_other_keys_in_env_file_are_allowed(root: Path) -> None:
+    (root / ".env").write_text("AWS_PROFILE=example\n")
+    assert config.get_settings().output_dir == root / "outputs"
+
+
+@pytest.mark.parametrize("key", ["OUTPUT_DRI", "ROOT"])
+def test_unknown_prefixed_key_in_env_file_is_an_error(root: Path, key: str) -> None:
+    (root / ".env").write_text(f"{config.PREFIX}{key}=x\n")
+    with pytest.raises(ValueError, match=f"{config.PREFIX}{key}"):
         config.get_settings()
 
 

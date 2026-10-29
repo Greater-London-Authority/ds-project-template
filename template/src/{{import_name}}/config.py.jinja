@@ -1,9 +1,10 @@
 """Settings: input and output locations, and anything else that differs by machine.
 
 Each setting is resolved in this order: an environment variable, then an entry in the
-project's `.env`, then the default here. Names take the prefix set in `model_config`,
-and every one is listed in `.env.example`. An unknown key with that prefix in `.env` is
-an error, so a misspelt name fails instead of being ignored.
+project's `.env`, then the default here. Names take the prefix `PREFIX`, and every one
+is listed in `.env.example`. A key with that prefix in `.env` that is not a setting is
+an error, so a misspelt name fails instead of being ignored. Other keys in `.env` (for
+other tools) are left alone.
 
 Relative paths are resolved against the project root (see `project_root`), never the
 current folder. Call `get_settings()` when a value is needed, so tests and environment
@@ -13,6 +14,7 @@ changes can override it; don't store the result at import time.
 import os
 from pathlib import Path
 
+from dotenv import dotenv_values
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PREFIX = "{{ import_name | upper }}_"
@@ -20,7 +22,7 @@ ROOT_VARIABLE = f"{PREFIX}ROOT"
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix=PREFIX, extra="forbid")
+    model_config = SettingsConfigDict(env_prefix=PREFIX, extra="ignore")
 
     data_dir: Path = Path("data")
     output_dir: Path = Path("outputs")
@@ -29,7 +31,8 @@ class Settings(BaseSettings):
 def project_root() -> Path:
     """The root of the project that runs the code.
 
-    `ROOT_VARIABLE` if set, otherwise `PIXI_PROJECT_ROOT`, which `pixi run` sets to the
+    The environment variable `ROOT_VARIABLE` if set (it cannot go in `.env`, which is
+    found from the root), otherwise `PIXI_PROJECT_ROOT`, which `pixi run` sets to the
     project folder from any subfolder. Not the location of this file: once the package
     is installed into another project, that is inside the environment.
     """
@@ -42,13 +45,37 @@ def project_root() -> Path:
     )
 
 
+def check_env_file(path: Path) -> None:
+    """Fail on keys in `.env` that have the prefix but are not settings."""
+    if not path.is_file():
+        return
+    known = {f"{PREFIX}{name}".upper() for name in Settings.model_fields}
+    unknown = sorted(
+        key
+        for key in dotenv_values(path)
+        if key.upper().startswith(PREFIX) and key.upper() not in known
+    )
+    if unknown:
+        raise ValueError(
+            f"Unknown settings in {path}: {', '.join(unknown)}. "
+            f"Known: {', '.join(sorted(known))}. "
+            f"{ROOT_VARIABLE} must be an environment variable, not in .env."
+        )
+
+
 def get_settings() -> Settings:
     """Read the settings, with relative paths resolved against the project root."""
     root = project_root()
-    settings = Settings(_env_file=root / ".env")
-    absolute = {
-        name: root / value
+    env_file = root / ".env"
+    check_env_file(env_file)
+    settings = Settings(_env_file=env_file)
+    paths = {
+        name: value.expanduser()
         for name, value in settings
-        if isinstance(value, Path) and not value.is_absolute()
+        if isinstance(value, Path)
+    }
+    absolute = {
+        name: value if value.is_absolute() else root / value
+        for name, value in paths.items()
     }
     return settings.model_copy(update=absolute)

@@ -9,6 +9,7 @@ requires-python = ">={{ python_version }}"
 authors = [{ name = "{{ author_name }}", email = "{{ author_email }}" }]
 dependencies = [
     "pydantic-settings>=2",
+    "python-dotenv>=1",
 {%- if has_cli %}
     "typer>=0.12",
 {%- endif %}
