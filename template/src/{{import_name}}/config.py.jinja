@@ -1,20 +1,54 @@
+"""Settings: input and output locations, and anything else that differs by machine.
+
+Each setting is resolved in this order: an environment variable, then an entry in the
+project's `.env`, then the default here. Names take the prefix set in `model_config`,
+and every one is listed in `.env.example`. An unknown key with that prefix in `.env` is
+an error, so a misspelt name fails instead of being ignored.
+
+Relative paths are resolved against the project root (see `project_root`), never the
+current folder. Call `get_settings()` when a value is needed, so tests and environment
+changes can override it; don't store the result at import time.
+"""
+
+import os
 from pathlib import Path
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+PREFIX = "{{ import_name | upper }}_"
+ROOT_VARIABLE = f"{PREFIX}ROOT"
 
 
 class Settings(BaseSettings):
-    """Runtime configuration.
+    model_config = SettingsConfigDict(env_prefix=PREFIX, extra="forbid")
 
-    Values are loaded from .env (gitignored).
-    All settings can be overridden with environment variables prefixed
-    {{ import_name | upper }}_.
-    """
-
-    data_dir:   Path = Path("data")
+    data_dir: Path = Path("data")
     output_dir: Path = Path("outputs")
 
-    model_config = {"env_prefix": "{{ import_name | upper }}_", "env_file": ".env"}
+
+def project_root() -> Path:
+    """The root of the project that runs the code.
+
+    `ROOT_VARIABLE` if set, otherwise `PIXI_PROJECT_ROOT`, which `pixi run` sets to the
+    project folder from any subfolder. Not the location of this file: once the package
+    is installed into another project, that is inside the environment.
+    """
+    for variable in (ROOT_VARIABLE, "PIXI_PROJECT_ROOT"):
+        value = os.environ.get(variable)
+        if value:
+            return Path(value).resolve()
+    raise RuntimeError(
+        f"Project root not found: set {ROOT_VARIABLE}, or run through `pixi run`."
+    )
 
 
-settings = Settings()
+def get_settings() -> Settings:
+    """Read the settings, with relative paths resolved against the project root."""
+    root = project_root()
+    settings = Settings(_env_file=root / ".env")
+    absolute = {
+        name: root / value
+        for name, value in settings
+        if isinstance(value, Path) and not value.is_absolute()
+    }
+    return settings.model_copy(update=absolute)

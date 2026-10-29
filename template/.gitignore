@@ -25,8 +25,8 @@ htmlcov/
 # Secrets
 .env
 
-# Data — immutable source data and generated outputs are not committed
-data/raw/
+# Data and outputs are never committed (including anything derived from licensed data)
+data/
 outputs/
 
 # OS

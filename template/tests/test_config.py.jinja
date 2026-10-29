@@ -1,0 +1,35 @@
+from pathlib import Path
+
+import pytest
+
+from {{ import_name }} import config
+
+
+@pytest.fixture
+def root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    monkeypatch.setenv(config.ROOT_VARIABLE, str(tmp_path))
+    for name in ("DATA_DIR", "OUTPUT_DIR"):
+        monkeypatch.delenv(f"{config.PREFIX}{name}", raising=False)
+    return tmp_path
+
+
+def test_relative_paths_resolve_against_the_project_root(root: Path) -> None:
+    assert config.get_settings().output_dir == root / "outputs"
+
+
+def test_env_file_is_read_from_the_project_root(root: Path) -> None:
+    (root / ".env").write_text(f"{config.PREFIX}OUTPUT_DIR=elsewhere\n")
+    assert config.get_settings().output_dir == root / "elsewhere"
+
+
+def test_unknown_key_in_env_file_is_an_error(root: Path) -> None:
+    (root / ".env").write_text(f"{config.PREFIX}OUTPUT_DRI=typo\n")
+    with pytest.raises(ValueError):
+        config.get_settings()
+
+
+def test_no_root_is_an_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv(config.ROOT_VARIABLE, raising=False)
+    monkeypatch.delenv("PIXI_PROJECT_ROOT", raising=False)
+    with pytest.raises(RuntimeError, match="Project root not found"):
+        config.project_root()
