@@ -100,7 +100,9 @@ This adds `src/`, `tests/`, `experiments/`, `docs/decisions/` and the CI workflo
 
 ## Versions
 
-Projects and packages take their version from the latest git tag (`git tag v0.3.0`). Between tags the version includes the commit (`0.3.1.dev2+g1a2b3c4`), so outputs can record exactly which code made them. An editable install records the version when it is installed: run `pixi reinstall <package-name>` after tagging.
+Projects and packages take their version from the latest git tag (`git tag v0.3.0`). Between tags the version includes the commit (`0.3.1.dev2+g1a2b3c4`).
+
+The version is worked out when the package is installed, and pixi installs the package in editable mode, so `__version__` does not change when you commit or tag: it stays at whatever it was at the last install. Run `pixi reinstall <package-name>` after tagging. If outputs need to record the exact commit that made them, read it from git when the run starts (`git rev-parse HEAD`, and `git status --porcelain` for uncommitted changes) rather than relying on `__version__`.
 
 ## What gets generated
 
@@ -145,7 +147,7 @@ project-name/
 ├── docs/
 │   ├── decisions/          # one short file per decision
 │   └── work-log.md
-├── .github/workflows/      # lint and tests on every push
+├── .github/workflows/      # lint and tests on pull requests and pushes to main
 ├── pixi.toml               # environment, dependencies, and tasks
 ├── pyproject.toml          # package metadata, build system, tool config
 ├── .copier-answers.yml
@@ -172,7 +174,7 @@ project-name/
 ├── docs/
 │   ├── decisions/
 │   └── work-log.md
-├── .github/workflows/      # lint, tests and type checks on every push
+├── .github/workflows/      # lint, tests, type checks on PRs and pushes to main
 ├── pixi.toml               # environment, dependencies, and tasks
 ├── pyproject.toml          # package metadata, build system, tool config
 ├── .copier-answers.yml
@@ -199,4 +201,4 @@ project-name/
 
 ## Testing the template
 
-`.github/workflows/test-template.yml` generates each project type on Linux and Windows and runs the generated project's own lint, tests, type checks and `--help`.
+`.github/workflows/test-template.yml` generates each project type on Linux and Windows, with two sets of options (CLI and CLAUDE.md without gla-data; gla-data without CLI or CLAUDE.md). It checks that no template text is left unrendered, runs the generated project's own lint, tests, type checks and `--help`, imports gla-data where chosen, and installs the package outside pixi to check its declared dependencies.

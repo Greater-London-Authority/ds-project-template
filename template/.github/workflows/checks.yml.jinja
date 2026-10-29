@@ -1,5 +1,6 @@
-# Lint and tests on every push and pull request. Tests here never have data or
-# database access: anything that needs them is skipped or run locally.
+# Lint and tests on every pull request and every push to main (not on pushes to
+# other branches). Tests here never have data or database access: anything that
+# needs them is skipped or run locally.
 name: checks
 
 on:
@@ -14,7 +15,7 @@ jobs:
 {%- elif 'win-64' in platforms %}
     runs-on: windows-latest
 {%- else %}
-    runs-on: macos-latest
+    runs-on: macos-latest  # Apple Silicon (osx-arm64)
 {%- endif %}
     steps:
       - uses: actions/checkout@v7.0.1
