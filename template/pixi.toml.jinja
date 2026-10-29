@@ -4,21 +4,21 @@ platforms = {{ platforms | tojson }}
 
 [dependencies]
 python = ">={{ python_version }}"
-{% if project_type != 'analysis' %}
+{% if project_type == 'analysis' and uses_gla_data %}
+[pypi-dependencies]
+gla-data = ">=0.4.0,<0.5"
+{% endif %}
+{%- if project_type != 'analysis' %}
 [pypi-dependencies]
 {{ import_name }} = { path = ".", editable = true }
 pytest            = "*"
 ruff              = "*"
-pydantic-settings = "*"
 {% if project_type == 'package' %}
 pytest-cov      = "*"
 mypy            = "*"
 uv              = "*"
 build           = "*"
 bump-my-version = "*"
-{% endif %}
-{% if has_cli %}
-typer = "*"
 {% endif %}
 
 [tasks]

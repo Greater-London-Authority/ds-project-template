@@ -49,6 +49,11 @@ has_cli:
   default: false
   when: "{{ project_type != 'analysis' }}"
 
+uses_gla_data:
+  type: bool
+  help: "Does this project read GLA databases or S3 data through gla-data?"
+  default: false
+
 python_version:
   type: str
   help: "Minimum Python version"
