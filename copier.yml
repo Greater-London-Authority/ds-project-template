@@ -92,3 +92,4 @@ _exclude:
   - "{% if project_type != 'project' %}experiments{% else %}.exclude-placeholder{% endif %}"
   - "{% if project_type == 'analysis' %}docs/decisions{% else %}.exclude-placeholder{% endif %}"
   - "{% if not has_claude_md %}CLAUDE.md{% else %}.exclude-placeholder{% endif %}"
+  - "{% if project_type == 'analysis' %}.github{% else %}.exclude-placeholder{% endif %}"

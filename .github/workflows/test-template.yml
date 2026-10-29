@@ -1,0 +1,50 @@
+# Generates a project of each type from this commit and runs its own checks.
+name: test-template
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  render:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        type: [analysis, project, package]
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          run-install: false
+      - name: Generate a ${{ matrix.type }}
+        shell: bash
+        run: >
+          pixi exec --spec copier copier copy --defaults --vcs-ref HEAD
+          -d project_type=${{ matrix.type }} -d package_name=generated-${{ matrix.type }}
+          -d description=Test -d author_name=Test -d author_email=test@example.com
+          -d has_cli=true -d uses_gla_data=false -d has_claude_md=true
+          -d 'platforms=["linux-64", "win-64"]'
+          . ../generated
+      - name: Lint and test
+        if: matrix.type != 'analysis'
+        shell: bash
+        working-directory: ../generated
+        run: |
+          git init -q && git add . && git -c user.name=ci -c user.email=ci@example.com commit -qm init
+          pixi run lint
+          pixi run test
+          pixi run generated-${{ matrix.type }} --help
+      - name: Type check
+        if: matrix.type == 'package'
+        working-directory: ../generated
+        run: pixi run typecheck
+      - name: Analysis environment installs
+        if: matrix.type == 'analysis'
+        working-directory: ../generated
+        run: pixi install

@@ -1,0 +1,27 @@
+# Lint and tests on every push and pull request. Tests here never have data or
+# database access: anything that needs them is skipped or run locally.
+name: checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+{%- if 'linux-64' in platforms %}
+    runs-on: ubuntu-latest
+{%- elif 'win-64' in platforms %}
+    runs-on: windows-latest
+{%- else %}
+    runs-on: macos-latest
+{%- endif %}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0  # tags, for the version
+      - uses: prefix-dev/setup-pixi@v0.10.2
+      - run: pixi run lint
+      - run: pixi run test
+{%- if project_type == 'package' %}
+      - run: pixi run typecheck
+{%- endif %}
