@@ -56,7 +56,10 @@ jobs:
       - name: CLI parses arguments
         if: matrix.type != 'analysis' && matrix.options.cli
         working-directory: ../generated
-        run: pixi run generated-${{ matrix.type }} --help | grep -q "Usage:"
+        # Output captured first: `| grep -q` closes the pipe early, which fails pixi under pipefail
+        run: |
+          help="$(pixi run generated-${{ matrix.type }} --help)"
+          grep -q "Usage:" <<< "$help"
       - name: Type check
         if: matrix.type == 'package'
         working-directory: ../generated
