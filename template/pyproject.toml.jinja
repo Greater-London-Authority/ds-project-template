@@ -10,7 +10,7 @@ authors = [{ name = "{{ author_name }}", email = "{{ author_email }}" }]
 dependencies = []
 {% if has_cli %}
 [project.scripts]
-{{ package_name }} = "{{ import_name }}.cli:main"
+{{ package_name }} = "{{ import_name }}.cli:app"
 
 {% endif %}
 [build-system]
