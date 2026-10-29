@@ -1,0 +1,23 @@
+# {{ package_name }}
+
+{{ description }}
+
+- Open work: [docs/work-log.md](docs/work-log.md)
+{%- if project_type != 'analysis' %}
+- Decisions: [docs/decisions/](docs/decisions/)
+{%- endif %}
+
+## Rules for this repo
+
+- Code and docs only: no data or outputs in git.
+{%- if project_type != 'analysis' %}
+- Settings and paths: `src/{{ import_name }}/config.py`; every setting is in `.env.example`.
+{%- endif %}
+{%- if project_type == 'project' %}
+- `experiments/` imports the package; the package never imports `experiments/`
+  ([experiments/README.md](experiments/README.md)).
+{%- endif %}
+{%- if uses_gla_data %}
+- Database and S3 reads go through gla-data.
+{%- endif %}
+- Run Python through `pixi run`.

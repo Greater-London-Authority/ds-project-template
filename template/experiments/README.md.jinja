@@ -1,0 +1,13 @@
+# Experiments
+
+Model fitting, trials, comparisons and one-off checks: code that is run to find something
+out, not code the project's outputs depend on.
+
+- Experiments import `{{ import_name }}`. `{{ import_name }}` never imports from here.
+- When a result is accepted, or a second piece of code needs a function, move the function
+  into `src/{{ import_name }}/` with tests, and drop the options that only the experiments
+  used. Don't add settings to the package for experimental branches.
+- Code used both to fit a model and to apply it (features, corrections) lives in the
+  package, so fitting and prediction cannot drift apart.
+- Write results to `outputs/` (not committed), and record what was decided in
+  `docs/decisions/`.

@@ -24,15 +24,37 @@ cd {{ package_name }}
 pixi install
 ```
 {% endif %}
-{% if project_type != 'analysis' %}
+{%- if project_type != 'analysis' %}
+Settings (input and output paths, and anything else that differs between machines) are
+listed in `.env.example`. Copy it to `.env` and fill in what you need; relative paths are
+resolved against the project folder.
+{% endif %}
+{%- if project_type == 'project' %}
+## Layout
+
+- `src/{{ import_name }}/`: the code the project's outputs depend on.
+- `experiments/`: fitting, trials and checks. It imports `{{ import_name }}`; never the
+  reverse. See [experiments/README.md](experiments/README.md).
+- `notebooks/`: exploration.
+- `docs/decisions/`: what was decided and why. `docs/work-log.md`: open work.
+{% endif %}
+{%- if project_type != 'analysis' %}
 ## Development
 
 ```bash
 pixi run test    # run tests
 pixi run lint    # check code style
 pixi run format  # auto-format
-{% if project_type == 'package' %}
+{%- if project_type == 'package' %}
 pixi run typecheck  # type checking
-{% endif %}
+{%- endif %}
 ```
+
+## Versions
+
+The version comes from the latest git tag: `git tag v0.2.0` makes a release. Between tags
+it includes the commit (`0.2.1.dev3+g1a2b3c4`). It is worked out when pixi installs the
+package, so it does not change as you commit: after tagging, run
+`pixi reinstall {{ package_name }}`. To record the exact commit in outputs, read it from
+git when a run starts.
 {% endif %}

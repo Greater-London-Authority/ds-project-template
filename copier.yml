@@ -49,6 +49,16 @@ has_cli:
   default: false
   when: "{{ project_type != 'analysis' }}"
 
+uses_gla_data:
+  type: bool
+  help: "Does this project read GLA databases or S3 data through gla-data?"
+  default: false
+
+has_claude_md:
+  type: bool
+  help: "Add a CLAUDE.md (instructions for Claude Code)?"
+  default: false
+
 python_version:
   type: str
   help: "Minimum Python version"
@@ -79,3 +89,8 @@ _exclude:
   - "{% if project_type == 'package' %}notebooks{% else %}.exclude-placeholder{% endif %}"
   - "{% if project_type == 'package' %}outputs{% else %}.exclude-placeholder{% endif %}"
   - "{% if not has_cli %}src/*/cli.py{% else %}.exclude-placeholder{% endif %}"
+  - "{% if project_type != 'project' %}experiments{% else %}.exclude-placeholder{% endif %}"
+  - "{% if project_type == 'analysis' %}docs/decisions{% else %}.exclude-placeholder{% endif %}"
+  - "{% if not has_claude_md %}CLAUDE.md{% else %}.exclude-placeholder{% endif %}"
+  # No CI for analyses, or when no target platform has a GitHub-hosted runner (osx-64 only).
+  - "{% if project_type == 'analysis' or not ('linux-64' in platforms or 'win-64' in platforms or 'osx-arm64' in platforms) %}.github{% else %}.exclude-placeholder{% endif %}"

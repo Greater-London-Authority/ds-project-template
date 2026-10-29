@@ -1,0 +1,80 @@
+# Generates a project of each type from this commit and runs its own checks.
+name: test-template
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  render:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        type: [analysis, project, package]
+        options:
+          - {cli: true, gla_data: false, claude_md: true}
+          - {cli: false, gla_data: true, claude_md: false}
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHONUTF8: "1"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          run-install: false
+      - name: Generate a ${{ matrix.type }}
+        run: >
+          pixi exec --spec copier copier copy --defaults --vcs-ref HEAD
+          -d project_type=${{ matrix.type }} -d package_name=generated-${{ matrix.type }}
+          -d description=Test -d author_name=Test -d author_email=test@example.com
+          -d has_cli=${{ matrix.options.cli }} -d uses_gla_data=${{ matrix.options.gla_data }}
+          -d has_claude_md=${{ matrix.options.claude_md }}
+          -d 'platforms=["linux-64", "win-64"]'
+          . ../generated
+      - name: No unrendered template text
+        working-directory: ../generated
+        run: |
+          if grep -rnE '\{\{|\{%' --exclude-dir=.git .; then
+            echo "Unrendered template text found"; exit 1
+          fi
+      - name: Commit, for the version from git
+        working-directory: ../generated
+        run: git init -q && git add . && git -c user.name=ci -c user.email=ci@example.com commit -qm init
+      - name: Lint and test
+        if: matrix.type != 'analysis'
+        working-directory: ../generated
+        run: |
+          pixi run lint
+          pixi run test
+      - name: CLI parses arguments
+        if: matrix.type != 'analysis' && matrix.options.cli
+        working-directory: ../generated
+        # Output captured first: `| grep -q` closes the pipe early, which fails pixi under pipefail
+        run: |
+          help="$(pixi run generated-${{ matrix.type }} --help)"
+          grep -q "Usage:" <<< "$help"
+      - name: Type check
+        if: matrix.type == 'package'
+        working-directory: ../generated
+        run: pixi run typecheck
+      - name: Package works outside pixi (dependencies declared in pyproject.toml)
+        if: matrix.type != 'analysis'
+        working-directory: ../generated
+        run: >
+          pixi exec --spec uv uv run --no-project --isolated --with . --python 3.12
+          python -c "import generated_${{ matrix.type }}.config"
+      - name: Analysis environment installs
+        if: matrix.type == 'analysis'
+        working-directory: ../generated
+        run: pixi install
+      - name: gla-data imports
+        if: matrix.options.gla_data
+        working-directory: ../generated
+        run: pixi run python -c "import gla_data"

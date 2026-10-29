@@ -4,21 +4,20 @@ platforms = {{ platforms | tojson }}
 
 [dependencies]
 python = ">={{ python_version }}"
-{% if project_type != 'analysis' %}
+{% if project_type == 'analysis' and uses_gla_data %}
+[pypi-dependencies]
+gla-data = ">=0.4.0,<0.5"
+{% endif %}
+{%- if project_type != 'analysis' %}
 [pypi-dependencies]
 {{ import_name }} = { path = ".", editable = true }
 pytest            = "*"
 ruff              = "*"
-pydantic-settings = "*"
 {% if project_type == 'package' %}
 pytest-cov      = "*"
 mypy            = "*"
 uv              = "*"
 build           = "*"
-bump-my-version = "*"
-{% endif %}
-{% if has_cli %}
-typer = "*"
 {% endif %}
 
 [tasks]
@@ -31,8 +30,5 @@ build         = "python -m build"
 publish-test  = "uv publish --publish-url https://test.pypi.org/legacy/ dist/*"
 publish       = "uv publish dist/*"
 add-dep       = "uv add"
-release-patch = "bump-my-version bump patch"
-release-minor = "bump-my-version bump minor"
-release-major = "bump-my-version bump major"
 {% endif %}
 {% endif %}

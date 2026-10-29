@@ -1,21 +1,36 @@
 {% if project_type != 'analysis' -%}
 [project]
 name = "{{ package_name }}"
-version = "0.1.0"
+dynamic = ["version"]
 description = "{{ description }}"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">={{ python_version }}"
 authors = [{ name = "{{ author_name }}", email = "{{ author_email }}" }]
-dependencies = []
+dependencies = [
+    "pydantic-settings>=2",
+    "python-dotenv>=1",
+{%- if has_cli %}
+    "typer>=0.12",
+{%- endif %}
+{%- if uses_gla_data %}
+    "gla-data>=0.4.0,<0.5",
+{%- endif %}
+]
 {% if has_cli %}
 [project.scripts]
-{{ package_name }} = "{{ import_name }}.cli:main"
+{{ package_name }} = "{{ import_name }}.cli:app"
 
 {% endif %}
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
+
+# The version comes from the latest git tag (e.g. v0.2.0); between tags it includes the
+# commit (0.2.1.dev3+g1a2b3c4). 0.0.0 before the first commit.
+[tool.hatch.version]
+source = "vcs"
+raw-options = { fallback_version = "0.0.0" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -33,14 +48,5 @@ select = ["E", "F", "I", "UP", "B"]
 strict                 = true
 packages               = ["{{ import_name }}"]
 ignore_missing_imports = true
-
-[tool.bumpversion]
-current_version = "0.1.0"
-commit = true
-tag    = true
-
-[[tool.bumpversion.files]]
-filename = "pyproject.toml"
-search   = 'version = "{current_version}"'
-replace  = 'version = "{new_version}"'
+plugins                = ["pydantic.mypy"]
 {% endif %}
